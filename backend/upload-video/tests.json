@@ -1,0 +1,13 @@
+{
+  "tests": [
+    {
+      "name": "Без обязательных полей — ошибка",
+      "method": "POST",
+      "path": "/",
+      "body": {},
+      "expectedStatus": 400,
+      "expectedBody": {"error": "Заполните title, summary, content"},
+      "bodyMatcher": "partial"
+    }
+  ]
+}

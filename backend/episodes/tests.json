@@ -1,0 +1,12 @@
+{
+  "tests": [
+    {
+      "name": "Поиск выпусков",
+      "method": "GET",
+      "path": "/?search=лего",
+      "expectedStatus": 200,
+      "expectedBody": {"total": 3},
+      "bodyMatcher": "partial"
+    }
+  ]
+}
