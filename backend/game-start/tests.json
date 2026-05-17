@@ -1,0 +1,13 @@
+{
+  "tests": [
+    {
+      "name": "Старт без игроков — ошибка",
+      "method": "POST",
+      "path": "/",
+      "body": {"players": []},
+      "expectedStatus": 400,
+      "expectedBody": {"error": "Нужно ровно 6 игроков"},
+      "bodyMatcher": "partial"
+    }
+  ]
+}

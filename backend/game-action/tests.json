@@ -1,0 +1,12 @@
+{
+  "tests": [
+    {
+      "name": "Без session_id — ошибка",
+      "method": "GET",
+      "path": "/?action=state",
+      "expectedStatus": 400,
+      "expectedBody": {"error": "session_id required"},
+      "bodyMatcher": "partial"
+    }
+  ]
+}

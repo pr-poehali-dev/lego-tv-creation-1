@@ -1,4 +1,6 @@
 {
+  "game-action": "https://functions.poehali.dev/5f65fe21-293e-45de-9b0f-c70c93d85ca2",
+  "game-start": "https://functions.poehali.dev/5cb0e6a6-ffb4-4462-8b64-28c082a574ef",
   "upload-video": "https://functions.poehali.dev/1c300a80-27c8-4c8e-a40c-157e7ba95802",
   "episodes": "https://functions.poehali.dev/f93bc995-6043-4b4d-8e84-9804ff8c30a1"
 }

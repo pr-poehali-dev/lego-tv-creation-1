@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Icon from '@/components/ui/icon';
 
 const EPISODES_URL = 'https://functions.poehali.dev/f93bc995-6043-4b4d-8e84-9804ff8c30a1';
@@ -331,6 +332,7 @@ function UploadModal({ onClose, onUploaded }: { onClose: () => void; onUploaded:
 }
 
 export default function Index() {
+  const navigate = useNavigate();
   const [activeSection, setActiveSection] = useState('Главная');
   const [episodes, setEpisodes] = useState<Episode[]>([]);
   const [total, setTotal] = useState(0);
@@ -418,6 +420,14 @@ export default function Index() {
         </nav>
 
         <div className="flex items-center gap-2">
+          <button
+            onClick={() => navigate('/show')}
+            className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-sm text-xs font-bold tracking-wide transition-all hover:opacity-90"
+            style={{ background: 'var(--lego-red)', color: 'white', fontFamily: 'Oswald, sans-serif' }}
+          >
+            <Icon name="Zap" size={13} />
+            5 МЛН
+          </button>
           <button
             onClick={() => setShowUpload(true)}
             className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-sm text-xs font-bold tracking-wide transition-all hover:opacity-90"
