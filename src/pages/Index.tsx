@@ -4,6 +4,7 @@ import Icon from '@/components/ui/icon';
 const EPISODES_URL = 'https://functions.poehali.dev/f93bc995-6043-4b4d-8e84-9804ff8c30a1';
 const UPLOAD_URL = 'https://functions.poehali.dev/1c300a80-27c8-4c8e-a40c-157e7ba95802';
 const STUDIO_IMG = 'https://cdn.poehali.dev/projects/b397efa2-a431-4517-a0dc-9ca5ab4e622c/files/547f742a-ffca-4ef8-a795-7a63791cb71f.jpg';
+const SPLASH_IMG = 'https://cdn.poehali.dev/projects/b397efa2-a431-4517-a0dc-9ca5ab4e622c/files/9a5a1f21-b98a-47f1-b47e-ec8c6f8b3bbe.jpg';
 
 type Episode = {
   id: number;
@@ -57,6 +58,88 @@ function LiveClock() {
   );
 }
 
+function EpisodeSplash({ episode, onDone }: { episode: Episode; onDone: () => void }) {
+  const [phase, setPhase] = useState<'in' | 'hold' | 'out'>('in');
+
+  useEffect(() => {
+    const t1 = setTimeout(() => setPhase('hold'), 600);
+    const t2 = setTimeout(() => setPhase('out'), 3800);
+    const t3 = setTimeout(() => onDone(), 4400);
+    return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); };
+  }, [onDone]);
+
+  return (
+    <div
+      className="fixed inset-0 z-[100] flex items-center justify-center overflow-hidden"
+      style={{
+        background: '#0D0F13',
+        opacity: phase === 'out' ? 0 : 1,
+        transition: phase === 'out' ? 'opacity 0.6s ease' : phase === 'in' ? 'opacity 0.5s ease' : 'none',
+      }}
+    >
+      {/* Background image */}
+      <img
+        src={SPLASH_IMG}
+        alt=""
+        className="absolute inset-0 w-full h-full object-cover"
+        style={{ opacity: 0.18 }}
+      />
+
+      {/* Animated scan lines */}
+      <div className="absolute inset-0 pointer-events-none" style={{
+        backgroundImage: 'repeating-linear-gradient(0deg, rgba(0,0,0,0.15) 0px, rgba(0,0,0,0.15) 1px, transparent 1px, transparent 3px)',
+      }} />
+
+      {/* Top bar */}
+      <div className="absolute top-0 left-0 right-0 h-1.5" style={{ background: 'var(--lego-yellow)' }} />
+
+      {/* Content */}
+      <div className="relative z-10 text-center px-8" style={{
+        transform: phase === 'in' ? 'scale(0.88)' : 'scale(1)',
+        transition: 'transform 0.6s cubic-bezier(0.34,1.56,0.64,1)',
+      }}>
+        {/* Logo */}
+        <div className="flex items-center justify-center gap-4 mb-8">
+          <div className="w-16 h-16 rounded-sm flex items-center justify-center text-3xl font-black shadow-lg" style={{ background: 'var(--lego-yellow)', color: '#0D0F13', fontFamily: 'Oswald, sans-serif' }}>L</div>
+          <div className="text-left">
+            <div className="text-5xl font-black tracking-widest text-white" style={{ fontFamily: 'Oswald, sans-serif' }}>
+              LEGO <span style={{ color: 'var(--lego-yellow)' }}>ТВ</span>
+            </div>
+            <div className="text-xs tracking-[0.4em] text-white/40 mt-1">НОВОСТИ ИЗ КИРПИЧИКОВ</div>
+          </div>
+        </div>
+
+        {/* Episode badge */}
+        <div className="inline-flex items-center gap-3 mb-4 px-5 py-2 rounded-sm" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,215,0,0.2)' }}>
+          <span className="live-dot w-2 h-2 rounded-full inline-block" style={{ background: 'var(--lego-red)' }} />
+          <span className="text-sm tracking-[0.3em] text-white/60" style={{ fontFamily: 'Oswald, sans-serif' }}>
+            ВЫПУСК #{episode.episode_number}
+          </span>
+        </div>
+
+        {/* Title */}
+        <h2 className="text-2xl md:text-4xl text-white max-w-2xl mx-auto leading-tight mb-3" style={{ fontFamily: 'Oswald, sans-serif' }}>
+          {episode.title}
+        </h2>
+        <p className="text-white/40 text-sm">{episode.aired_at}</p>
+      </div>
+
+      {/* Bottom bar */}
+      <div className="absolute bottom-0 left-0 right-0 h-1" style={{
+        background: 'linear-gradient(90deg, var(--lego-red) 0%, var(--lego-yellow) 50%, var(--lego-red) 100%)',
+        animation: 'splashBar 3.5s linear forwards',
+      }} />
+
+      <style>{`
+        @keyframes splashBar {
+          from { transform: scaleX(0); transform-origin: left; }
+          to   { transform: scaleX(1); transform-origin: left; }
+        }
+      `}</style>
+    </div>
+  );
+}
+
 function TTSPlayer({ text, title }: { text: string; title: string }) {
   const [playing, setPlaying] = useState(false);
   const [supported] = useState(() => 'speechSynthesis' in window);
@@ -100,12 +183,18 @@ function TTSPlayer({ text, title }: { text: string; title: string }) {
 }
 
 function EpisodeModal({ ep, onClose }: { ep: Episode; onClose: () => void }) {
+  const [showSplash, setShowSplash] = useState(true);
+
   useEffect(() => {
     const handler = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
     document.addEventListener('keydown', handler);
     document.body.style.overflow = 'hidden';
     return () => { document.removeEventListener('keydown', handler); document.body.style.overflow = ''; };
   }, [onClose]);
+
+  if (showSplash) {
+    return <EpisodeSplash episode={ep} onDone={() => setShowSplash(false)} />;
+  }
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={onClose}>
